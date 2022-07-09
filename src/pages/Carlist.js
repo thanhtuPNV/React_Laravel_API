@@ -3,28 +3,29 @@ import axios from "axios";
 import AddCar from './AddCart';
 
 const Carlist = () => {
+    const [isLoaded, setIsLoaded] = useState(false);
     const [car, setCar] = useState({
-        carList:[],
-        isLoaded: false,
+        carList:[]
     });
+    const getCar = async () => {
+        var res = await axios(
+            "http://127.0.0.1:8000/api/cars"
+        );
+        var carList = await res.data;
+        setCar({ carList });
+        setIsLoaded({isLoaded: true })
+    };
     useEffect(() => {
-        const getCar = async () => {
-            var res = await axios(
-                "http://127.0.0.1:8000/api/cars"
-            );
-            var carList = await res.data;
-            setCar({ carList, isLoaded: true});
-        };
-        if (!car.isLoaded) getCar();
-    },[car]);
-    console.log(car.carList.data);
+        if (!isLoaded) getCar();
+    },[isLoaded]);
+    // console.log(car.carList.data);
   return (
     <>
     <div className='container'>
-        <AddCar />
+        <AddCar onAdded={setIsLoaded} />
         {/* <a href={<AddCar />}>Create</a> */}
         <h3>Danh sách xe</h3>
-        {car.isLoaded ? (
+        {isLoaded ? (
             <table className='table'>
             <thead>
                 <tr>
